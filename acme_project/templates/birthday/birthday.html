@@ -1,5 +1,45 @@
 {% extends "base.html" %}
+{% load django_bootstrap5 %}
 
 {% block content %}
+  {% with form.instance as data %}
+  {% if '/edit/' in request.path %}
+    <h1>Редактировать запись {{ data.pk }}</h1>
+  {% elif '/delete/' in request.path %}
+    <h1>Удалить запись {{ data.pk }}</h1>
+  {% else %}
+    <h1>Создать запись</h1>
+  {% endif %}
+
+  
+  <div class="card col-4">
+    <div class="card-header">
+      Калькулятор ожидания дня рождения
+    </div>
+    <div class="card-body">
+      <form method="post">
+        {% csrf_token %}
+        {% if '/delete/' not in request.path %}
+          {% bootstrap_form form %}
+        {% else %}
+          <p>{{ data.first_name }} {{ data.last_name }}</p>
+          <p>{{ data.birthday }}</p>
+        {% endif %}
+        {% bootstrap_button button_type="submit" content="Отправить" %}
+      </form>
+    </div>
+  </div>
+
+    {% if form.is_valid %}
+      <i>ID записи в БД: {{ data.id }}</i><hr>
+      <h2>Привет, {{ data.first_name }} {{ data.last_name }}</h2>
+      {% if birthday_countdown == 0 %}
+          <h3>С ДР!</h3>
+      {% else %}
+          <h3>До ДР осталось {{ birthday_countdown }} дней</h3>
+      {% endif %}
+    {% endif %}
+
+  {% endwith %}
 
 {% endblock %}
