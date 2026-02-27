@@ -11,7 +11,9 @@ def birthday(request, pk=None):
     else:
         instance = None
 
-    form = BirthdayForm(request.POST or None, instance=instance)
+    form = BirthdayForm(request.POST or None,
+                        files=request.FILES or None,
+                        instance=instance)
     context = {'form': form}
 
     if form.is_valid():
