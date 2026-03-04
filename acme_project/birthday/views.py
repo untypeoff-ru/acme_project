@@ -19,6 +19,9 @@ class OnlyAuthorMixin(UserPassesTestMixin):
 
 class BirthdayListView(ListView):
     model = Birthday
+    queryset = Birthday.objects.prefetch_related(
+        'tag'
+    ).select_related('author')
     ordering = 'id'
     paginate_by = 10
 
@@ -55,6 +58,7 @@ class BirthdayDetailView(DetailView):
             self.object.congratulations.select_related('author')
         )
         return context
+
 
 @login_required
 def add_comment(request, pk):
